@@ -114,14 +114,14 @@ void GlobalOptimization::optimize()
             ceres::Solver::Summary summary;
             ceres::LossFunction *loss_function;
             loss_function = new ceres::HuberLoss(1.0);
-            ceres::LocalParameterization* local_parameterization = new ceres::QuaternionParameterization();
+            ceres::Manifold* quaternion_manifold = new ceres::QuaternionManifold();
 
             //add param
             mPoseMap.lock();
             int length = localPoseMap.size();
             // w^t_i   w^q_i
-            double t_array[length][3];
-            double q_array[length][4];
+            std::vector<std::array<double, 3>> t_array(length);
+            std::vector<std::array<double, 4>> q_array(length);
             map<double, vector<double>>::iterator iter;
             iter = globalPoseMap.begin();
             for (int i = 0; i < length; i++, iter++)
@@ -133,8 +133,8 @@ void GlobalOptimization::optimize()
                 q_array[i][1] = iter->second[4];
                 q_array[i][2] = iter->second[5];
                 q_array[i][3] = iter->second[6];
-                problem.AddParameterBlock(q_array[i], 4, local_parameterization);
-                problem.AddParameterBlock(t_array[i], 3);
+                problem.AddParameterBlock(q_array[i].data(), 4, quaternion_manifold);
+                problem.AddParameterBlock(t_array[i].data(), 3);
             }
 
             map<double, vector<double>>::iterator iterVIO, iterVIONext, iterGPS;
@@ -162,7 +162,7 @@ void GlobalOptimization::optimize()
                     ceres::CostFunction* vio_function = RelativeRTError::Create(iPj.x(), iPj.y(), iPj.z(),
                                                                                 iQj.w(), iQj.x(), iQj.y(), iQj.z(),
                                                                                 0.1, 0.01);
-                    problem.AddResidualBlock(vio_function, NULL, q_array[i], t_array[i], q_array[i+1], t_array[i+1]);
+                    problem.AddResidualBlock(vio_function, NULL, q_array[i].data(), t_array[i].data(), q_array[i+1].data(), t_array[i+1].data());
 
                     /*
                     double **para = new double *[4];
@@ -200,7 +200,7 @@ void GlobalOptimization::optimize()
                     ceres::CostFunction* gps_function = TError::Create(iterGPS->second[0], iterGPS->second[1], 
                                                                        iterGPS->second[2], iterGPS->second[3]);
                     //printf("inverse weight %f \n", iterGPS->second[3]);
-                    problem.AddResidualBlock(gps_function, loss_function, t_array[i]);
+                    problem.AddResidualBlock(gps_function, loss_function, t_array[i].data());
 
                     /*
                     double **para = new double *[1];

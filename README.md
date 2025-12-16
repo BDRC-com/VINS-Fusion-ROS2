@@ -1,6 +1,26 @@
-# VINS-Fusion
+# VINS-Fusion (ROS 2 Optimized)
 
-## ROS2 version of VINS-Fusion.
+This is a fork of VINS-Fusion-ROS2, optimized for modern ROS 2 distributions (Humble/Jazzy) and embedded platforms (like RK3588).
+
+## Modifications in this Fork
+
+### 1. Ceres Solver API Update (Migration to Ceres 2.2+)
+*   Replaced deprecated `ceres::LocalParameterization` with `ceres::Manifold`.
+*   Updated `ceres::QuaternionParameterization` to `ceres::QuaternionManifold`.
+*   Implemented `AngleManifold` to replace `AngleLocalParameterization`.
+*   Updated `EigenQuaternionParameterization` to use `ceres::EigenQuaternionManifold`.
+
+### 2. Code Modernization & Fixes
+*   **Variable Length Arrays (VLAs)**: Replaced C-style VLAs (e.g., `double array[n]`) with `std::vector` to improve stability and standard compliance.
+*   **ROS 2 Compatibility**: Updated `rclcpp::Duration` constructors for newer ROS 2 distributions (Humble/Jazzy).
+*   **Header Fixes**: Updated `cv_bridge` includes to `.hpp`.
+
+### 3. Configuration
+*   **GPU Mode**: Disabled by default (CPU mode enabled) in `feature_tracker.h` for broader compatibility on RK3588 without specific CUDA setup.
+
+---
+
+## Original VINS-Fusion-ROS2 Description
 
 ### Notices
 - code has been updated so that the vins package can be executed via ros2 run or ros2 launch

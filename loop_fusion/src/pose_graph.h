@@ -122,22 +122,30 @@ T NormalizeAngle(const T& angle_degrees) {
   	return angle_degrees;
 };
 
-class AngleLocalParameterization {
+class AngleManifold : public ceres::Manifold {
  public:
-
-  template <typename T>
-  bool operator()(const T* theta_radians, const T* delta_theta_radians,
-                  T* theta_radians_plus_delta) const {
-    *theta_radians_plus_delta =
-        NormalizeAngle(*theta_radians + *delta_theta_radians);
-
+  bool Plus(const double* x, const double* delta, double* x_plus_delta) const override {
+    *x_plus_delta = NormalizeAngle(*x + *delta);
     return true;
   }
 
-  static ceres::LocalParameterization* Create() {
-    return (new ceres::AutoDiffLocalParameterization<AngleLocalParameterization,
-                                                     1, 1>);
+  bool PlusJacobian(const double* x, double* jacobian) const override {
+    *jacobian = 1.0;
+    return true;
   }
+
+  bool Minus(const double* y, const double* x, double* delta) const override {
+    *delta = NormalizeAngle(*y - *x);
+    return true;
+  }
+
+  bool MinusJacobian(const double* x, double* jacobian) const override {
+    *jacobian = 1.0;
+    return true;
+  }
+
+  int AmbientSize() const override { return 1; }
+  int TangentSize() const override { return 1; }
 };
 
 template <typename T> 
