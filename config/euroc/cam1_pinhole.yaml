@@ -1,32 +1,32 @@
 %YAML:1.0
 
 model_type: PINHOLE
-camera_name: camera
+camera_name: right_camera
 image_width: 752
 image_height: 480
 distortion_parameters:
-   k1: -2.9294124381930947e-01
-   k2: 8.4798002331543665e-02
-   p1: -2.9984646536002372e-04
-   p2: 3.0028216325237329e-04
+   k1: -0.162202
+   k2: 0.019175
+   p1: 0.000625
+   p2: 0.000229
 projection_parameters:
-   fx: 4.6009781682258682e+02
-   fy: 4.5890983492218902e+02
-   cx: 3.7314916359808268e+02
-   cy: 2.5440734973672119e+02
-   # %YAML:1.0
-# ---
+   fx: 239.926
+   fy: 240.46392
+   cx: 369.03944
+   cy: 228.72767
+# %YAML:1.0
+
 # model_type: PINHOLE
-# camera_name: right_camera
+# camera_name: camera
 # image_width: 752
 # image_height: 480
 # distortion_parameters:
-#    k1: -0.026069
-#    k2: 0.063292
-#    p1: 0.001414
-#    p2: 0.004513
+#    k1: -2.9294124381930947e-01
+#    k2: 8.4798002331543665e-02
+#    p1: -2.9984646536002372e-04
+#    p2: 3.0028216325237329e-04
 # projection_parameters:
-#    fx: 523.28257
-#    fy: 522.87079
-#    cx: 334.16469
-#    cy: 256.99183
+#    fx: 4.6009781682258682e+02
+#    fy: 4.5890983492218902e+02
+#    cx: 3.7314916359808268e+02
+#    cy: 2.5440734973672119e+02
